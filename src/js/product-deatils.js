@@ -1,36 +1,40 @@
-import { loadHeaderFooter,getParams,fetchData  } from "./utils.mjs";
+import { loadHeaderFooter, getParams, fetchData, addToCart, updateCartCount } from "./utils.mjs";
 
-loadHeaderFooter();
+async function initProductDetails() {
+  await loadHeaderFooter();
 
+  const dataId = getParams('productId');
+  const dataDetails = await fetchData('https://fakestoreapi.com/products');
+  const main = document.getElementById('main-container');
 
+  if (!main || !dataDetails) return;
 
+  const product = dataDetails.find(d => String(d.id) === String(dataId));
+  if (!product) {
+    main.innerHTML = '<p>Product not found</p>';
+    return;
+  }
 
+  main.innerHTML = `
+    <div class='cards'>
+      <h3>${product.title}</h3>
+      <img src="${product.image}" alt="${product.title}">
+      <p>$${product.price}</p>
+      <p>${product.description}</p>
+      <button class="buy-btn">Add To cart</button>
+    </div>`;
 
-const dataId = getParams('productId');
+  const buyBtn = main.querySelector('.buy-btn');
+  if (buyBtn) {
+    buyBtn.addEventListener('click', () => {
+      addToCart(product);
+      updateCartCount();
+      alert(`${product.title} added to cart`);
+    });
+  }
+}
 
-const dataDetails = await fetchData('https://fakestoreapi.com/products');
-const main = document.getElementById('main-container');
-
-dataDetails.forEach(data => {
-
-    if(data.id == dataId)
-    {
-        
-
-main.innerHTML= `
-<div class= 'cards' >
-
-        <h3>${data.title}</h3>
-   
-    <img src="${data.image}" alt="${data.title}">
-     <p> $${data.price}</p>
-    
-            
-    <p>${data. description}   
-  `
-    }
-    
-});
+document.addEventListener('DOMContentLoaded', initProductDetails);
 
 
 

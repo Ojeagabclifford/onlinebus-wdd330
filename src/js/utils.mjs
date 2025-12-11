@@ -18,9 +18,11 @@ async function loadTemplate(path) {
 
 async function loadHtml(params) {
 
-    const responseHeader = await loadTemplate(params);
-    const responseH = await responseHeader.text();
-    return responseH;
+  const response = await loadTemplate(params);
+  // loadTemplate returns a Response or an empty string on error
+  if (!response || typeof response.text !== 'function') return '';
+  const text = await response.text();
+  return text;
 
 
 
@@ -53,21 +55,37 @@ export async function loadHeaderFooter(){
 
     try {
 
+  // Use Vite base so paths resolve correctly in dev and production
+  const base = import.meta.env.BASE_URL || './';
 
-        
+  const headerHtml = await loadHtml(`${base}partials/header.html`);
 
-      const headerHtml = await loadHtml('./public/partials/header.html');
+  const headerEl = document.getElementById('main-header');
+  const footerEl = document.getElementById('main-footer');
 
-        
-        const headerEl = document.getElementById('main-header')
-        const footerEl = document.getElementById('main-footer')
+    if (headerEl) {
+      headerEl.innerHTML = headerHtml;
+      // Normalize header links so they work when site is hosted under a subpath
+      headerEl.querySelectorAll('a[href]').forEach(a => {
+        const href = a.getAttribute('href');
+        if (!href) return;
+        // ignore absolute root paths, protocols, mailto, and anchors
+        if (/^(?:\/|https?:|mailto:|#)/.test(href)) return;
+        a.setAttribute('href', `${base}${href.replace(/^\.\//, '')}`);
+      });
+    }
 
-        
-            headerEl.innerHTML = headerHtml;
-            
-    const footerHtml = await loadHtml('./public/partials/footer.html');
-        
-         footerEl.innerHTML = footerHtml;
+    const footerHtml = await loadHtml(`${base}partials/footer.html`);
+    if (footerEl) {
+      footerEl.innerHTML = footerHtml;
+      // Normalize footer links as well
+      footerEl.querySelectorAll('a[href]').forEach(a => {
+        const href = a.getAttribute('href');
+        if (!href) return;
+        if (/^(?:\/|https?:|mailto:|#)/.test(href)) return;
+        a.setAttribute('href', `${base}${href.replace(/^\.\//, '')}`);
+      });
+    }
        
         
     } catch (err) {
@@ -133,7 +151,7 @@ export async function cardTemplate(element,datas) {
     <img src="${data.image}" alt="${data.title}">
 
     <p> $${data.price}</p>
-    <a class = 'links' href="./product-details/index.html?productId=${data.id}">More about prodocut</a>
+    <a class = 'links' href="/product-details/index.html?productId=${data.id}">More about prodocut</a>
 
  <button class='buy-btn'>Add To cart</button>
 
@@ -170,7 +188,7 @@ function saveCart(cart) {
 }
 
 // Add item to cart
-function addToCart(product) {
+export function addToCart(product) {
   const cart = getCart();
   const existingItem = cart.find(item => item.id === product.id);
   
@@ -248,7 +266,7 @@ export function displayCartItems() {
 }
 
 // Update cart count in header
-function updateCartCount() {
+export function updateCartCount() {
   const cart = getCart();
   const cartCount = document.getElementById('cartCount');
   if (cartCount) {

@@ -18,7 +18,11 @@ export default defineConfig({
     assetsDir: 'assets',
     minify: 'esbuild',
     rollupOptions: {
-      input: path.resolve(__dirname, 'src/index.html')
+      input: {
+        main: path.resolve(__dirname, 'src/index.html'),
+        product: path.resolve(__dirname, 'src/product-details/index.html'),
+        cart: path.resolve(__dirname, 'src/addItems/index.html')
+      }
     }
   },
   resolve: {
