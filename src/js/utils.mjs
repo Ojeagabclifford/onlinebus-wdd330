@@ -57,13 +57,49 @@ export async function loadHeaderFooter(){
 
     // Use configured base (import.meta.env.BASE_URL) so partials resolve correctly
     const base = import.meta.env.BASE_URL || '/';
-    const headerHtml = await loadHtml(`${base}partials/header.html`);
+    const headerUrl = `${base}partials/header.html`;
+    console.log('[loadHeaderFooter] fetching header:', headerUrl);
+    const headerHtml = await loadHtml(headerUrl);
+    if (!headerHtml) console.warn('[loadHeaderFooter] headerHtml empty for', headerUrl);
     const headerEl = document.getElementById('main-header');
     const footerEl = document.getElementById('main-footer');
-    if (headerEl) headerEl.innerHTML = headerHtml;
+    if (headerEl) {
+      headerEl.innerHTML = headerHtml;
+      // Normalize links so they resolve correctly when site is served from a subpath
+      headerEl.querySelectorAll('a[href]').forEach(a => {
+        const href = a.getAttribute('href');
+        if (!href) return;
+        if (/^(https?:|mailto:|#)/.test(href)) return; // external/anchors
+        // if already starts with base, keep
+        if (href.startsWith(base)) return;
+        // if root-absolute (starts with '/') and base is not '/', prefix base (remove trailing slash)
+        if (href.startsWith('/')) {
+          if (base !== '/') a.setAttribute('href', `${base.replace(/\/$/, '')}${href}`);
+          return;
+        }
+        // relative href (./ or no leading slash): make it relative to base
+        a.setAttribute('href', `${base}${href.replace(/^\.\//, '')}`);
+      });
+    }
 
-    const footerHtml = await loadHtml(`${base}partials/footer.html`);
-    if (footerEl) footerEl.innerHTML = footerHtml;
+    const footerUrl = `${base}partials/footer.html`;
+    console.log('[loadHeaderFooter] fetching footer:', footerUrl);
+    const footerHtml = await loadHtml(footerUrl);
+    if (!footerHtml) console.warn('[loadHeaderFooter] footerHtml empty for', footerUrl);
+    if (footerEl) {
+      footerEl.innerHTML = footerHtml;
+      footerEl.querySelectorAll('a[href]').forEach(a => {
+        const href = a.getAttribute('href');
+        if (!href) return;
+        if (/^(https?:|mailto:|#)/.test(href)) return;
+        if (href.startsWith(base)) return;
+        if (href.startsWith('/')) {
+          if (base !== '/') a.setAttribute('href', `${base.replace(/\/$/, '')}${href}`);
+          return;
+        }
+        a.setAttribute('href', `${base}${href.replace(/^\.\//, '')}`);
+      });
+    }
        
         
     } catch (err) {
@@ -123,7 +159,8 @@ export async function cardTemplate(element,datas) {
 
     card.className = 'cardd'
     
-    
+    const base = import.meta.env.BASE_URL || '/';
+
     card.innerHTML =`
    
 
@@ -132,7 +169,7 @@ export async function cardTemplate(element,datas) {
     <img src="${data.image}" alt="${data.title}">
 
     <p> $${data.price}</p>
-    <a class = 'links' href="/product-details/index.html?productId=${data.id}">More about prodocut</a>
+    <a class = 'links' href="${base}product-details/index.html?productId=${data.id}">More about prodocut</a>
 
  <button class='buy-btn'>Add To cart</button>
 
