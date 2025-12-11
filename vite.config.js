@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
-import path from 'path';
+import path from 'path'; // path is still needed for path.resolve
+import { fileURLToPath, URL } from 'url'; // Import URL utilities for modern path handling
 
 export default defineConfig({
   root: 'src',
@@ -19,6 +20,8 @@ export default defineConfig({
     minify: 'esbuild',
     rollupOptions: {
       input: {
+        // Keeping path.resolve(__dirname, ...) as it forces an absolute path for Rollup,
+        // which is often safer and guarantees multi-page app behavior.
         main: path.resolve(__dirname, 'src/index.html'),
         product: path.resolve(__dirname, 'src/product-details/index.html'),
         cart: path.resolve(__dirname, 'src/addItems/index.html')
@@ -27,7 +30,10 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
+      // Using a slightly more modern, URL-based alias resolution
+      '@': fileURLToPath(new URL('./src', import.meta.url)) 
+      // OR you can keep the original which is also fine: 
+      // '@': path.resolve(__dirname, 'src')
     }
   },
   preview: {
