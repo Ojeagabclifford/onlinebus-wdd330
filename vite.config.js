@@ -3,8 +3,8 @@ import path from 'path';
 
 export default defineConfig({
   root: 'src',
-  base: '/',
-  publicDir: 'public', // expects static files in src/public
+  base: './', // use relative paths in built files (change to '/your-repo-name/' for GitHub Pages)
+  publicDir: 'public',
   server: {
     port: 5173,
     open: true,
@@ -14,7 +14,7 @@ export default defineConfig({
     outDir: '../dist',
     emptyOutDir: true,
     sourcemap: true,
-    target: 'esnext',
+    target: 'esnext', // keep if you really need top-level await; otherwise use a lower target and remove top-level await
     assetsDir: 'assets',
     minify: 'esbuild',
     rollupOptions: {
@@ -29,4 +29,5 @@ export default defineConfig({
   preview: {
     port: 5173,
     open: true
-  }});
+  }
+});
