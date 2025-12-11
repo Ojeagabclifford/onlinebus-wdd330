@@ -55,37 +55,15 @@ export async function loadHeaderFooter(){
 
     try {
 
-  // Use Vite base so paths resolve correctly in dev and production
-  const base = import.meta.env.BASE_URL || './';
-
-  const headerHtml = await loadHtml(`${base}partials/header.html`);
-
-  const headerEl = document.getElementById('main-header');
-  const footerEl = document.getElementById('main-footer');
-
-    if (headerEl) {
-      headerEl.innerHTML = headerHtml;
-      // Normalize header links so they work when site is hosted under a subpath
-      headerEl.querySelectorAll('a[href]').forEach(a => {
-        const href = a.getAttribute('href');
-        if (!href) return;
-        // ignore absolute root paths, protocols, mailto, and anchors
-        if (/^(?:\/|https?:|mailto:|#)/.test(href)) return;
-        a.setAttribute('href', `${base}${href.replace(/^\.\//, '')}`);
-      });
-    }
+    // Use configured base (import.meta.env.BASE_URL) so partials resolve correctly
+    const base = import.meta.env.BASE_URL || '/';
+    const headerHtml = await loadHtml(`${base}partials/header.html`);
+    const headerEl = document.getElementById('main-header');
+    const footerEl = document.getElementById('main-footer');
+    if (headerEl) headerEl.innerHTML = headerHtml;
 
     const footerHtml = await loadHtml(`${base}partials/footer.html`);
-    if (footerEl) {
-      footerEl.innerHTML = footerHtml;
-      // Normalize footer links as well
-      footerEl.querySelectorAll('a[href]').forEach(a => {
-        const href = a.getAttribute('href');
-        if (!href) return;
-        if (/^(?:\/|https?:|mailto:|#)/.test(href)) return;
-        a.setAttribute('href', `${base}${href.replace(/^\.\//, '')}`);
-      });
-    }
+    if (footerEl) footerEl.innerHTML = footerHtml;
        
         
     } catch (err) {
@@ -104,7 +82,10 @@ export async function init() {
   }
   const data = await fetchData('https://fakestoreapi.com/products');
   const mainC = document.getElementById('main-container');
-  if (mainC && data) cardTemplate(mainC, data);
+  if (mainC) {
+    if (data) cardTemplate(mainC, data);
+    else mainC.innerHTML = '<p>Failed to load products. Check the console for details.</p>';
+  }
   updateCartCount();
   const c = document.getElementById('cli');
   if (c) c.addEventListener('click', () => displayCartItems());

@@ -7,7 +7,11 @@ async function initProductDetails() {
   const dataDetails = await fetchData('https://fakestoreapi.com/products');
   const main = document.getElementById('main-container');
 
-  if (!main || !dataDetails) return;
+  if (!main) return;
+  if (!dataDetails) {
+    main.innerHTML = '<p>Failed to load product data. Check the console for details.</p>';
+    return;
+  }
 
   const product = dataDetails.find(d => String(d.id) === String(dataId));
   if (!product) {
