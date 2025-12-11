@@ -56,7 +56,7 @@ export async function loadHeaderFooter(){
 
         
 
-      const headerHtml = await loadHtml('/public/partials/header.html');
+      const headerHtml = await loadHtml('./public/partials/header.html');
 
         
         const headerEl = document.getElementById('main-header')
@@ -65,7 +65,7 @@ export async function loadHeaderFooter(){
         
             headerEl.innerHTML = headerHtml;
             
-     const footerHtml = await loadHtml('/public/partials/footer.html');
+    const footerHtml = await loadHtml('./public/partials/footer.html');
         
          footerEl.innerHTML = footerHtml;
        
@@ -77,9 +77,20 @@ export async function loadHeaderFooter(){
     }
 }
 
- const data = await fetchData('https://fakestoreapi.com/products');
- const mainC = document.getElementById('main-container');
-   cardTemplate(mainC,data);
+// Initialize app in an async function (avoid top-level await)
+export async function init() {
+  try {
+    await loadHeaderFooter();
+  } catch (e) {
+    // ignore
+  }
+  const data = await fetchData('https://fakestoreapi.com/products');
+  const mainC = document.getElementById('main-container');
+  if (mainC && data) cardTemplate(mainC, data);
+  updateCartCount();
+  const c = document.getElementById('cli');
+  if (c) c.addEventListener('click', () => displayCartItems());
+}
 
 export async function fetchData(url) {
 
@@ -122,7 +133,7 @@ export async function cardTemplate(element,datas) {
     <img src="${data.image}" alt="${data.title}">
 
     <p> $${data.price}</p>
-    <a class = 'links' href="/product-details/index.html?productId=${data.id}">More about prodocut</a>
+    <a class = 'links' href="./product-details/index.html?productId=${data.id}">More about prodocut</a>
 
  <button class='buy-btn'>Add To cart</button>
 
@@ -175,12 +186,13 @@ function addToCart(product) {
 // Remove item from cart
 // Remove item from cart
 export function removeFromCart(productId) {
+  const id = Number(productId);
   let cart = getCart();
-  cart = cart.filter(item => item.id !== productId);
+  cart = cart.filter(item => Number(item.id) !== id);
   saveCart(cart);
   displayCartItems();
   updateCartCount();
-} 
+}
 
 // Clear entire cart
 function clearCart() {
@@ -197,19 +209,19 @@ function getCartTotal() {
 export function displayCartItems() {
   const cart = getCart();
   const cartItemsDiv = document.getElementById('cartItems');
-  
+
   if (!cartItemsDiv) {
     console.log('cartItems element not found');
     return;
   }
-  
+
   if (cart.length === 0) {
     cartItemsDiv.innerHTML = '<p>Your cart is empty</p>';
     return;
   }
-  
+
   let html = '<table><tr><th>Item Name</th><th>Price</th><th>Quantity</th><th>Total</th><th>Action</th></tr>';
-  
+
   cart.forEach(item => {
     html += `
       <tr>
@@ -217,13 +229,22 @@ export function displayCartItems() {
         <td>$${item.price}</td>
         <td>${item.quantity}</td>
         <td>$${(item.price * item.quantity).toFixed(2)}</td>
-       
+        <td><button class="remove-btn" data-id="${item.id}">Remove</button></td>
       </tr>
     `;
   });
-  
+
   html += '</table>';
   cartItemsDiv.innerHTML = html;
+
+  // Wire remove buttons
+  const removeButtons = cartItemsDiv.querySelectorAll('.remove-btn');
+  removeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      removeFromCart(id);
+    });
+  });
 }
 
 // Update cart count in header
@@ -235,10 +256,4 @@ function updateCartCount() {
   }
 }
 
-const c = document.getElementById('cli');
-
-if (c) {
-  c.addEventListener('click', () => {
-    displayCartItems();
-  });
-}
+// Cart button is wired in `init()` after header is loaded

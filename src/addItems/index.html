@@ -18,9 +18,12 @@
     <div id="main-footer"></div>
     
     <script type="module">
-        import { loadHeaderFooter, displayCartItems } from '/js/utils.mjs';
-        loadHeaderFooter();
-        displayCartItems();
+        import { loadHeaderFooter, displayCartItems } from '../js/utils.mjs';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHeaderFooter();
+            displayCartItems();
+        });
     </script>
 </body>
 </html>
