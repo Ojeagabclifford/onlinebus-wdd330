@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "name": "Wireless Bluetooth Earbuds",
+    "price": 45.00,
+    "image": "a.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Smartphone Stand (Aluminum)",
+    "price": 12.99,
+    "image": "b.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Mechanical Keyboard RGB",
+    "price": 89.50,
+    "image": "c.jpg"
+  },
+  {
+    "id": 4,
+    "name": "USB-C Fast Charger",
+    "price": 18.00,
+    "image": "d.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Noise Cancelling Headphones",
+    "price": 120.00,
+    "image": "e.jpg"
+  },
+  {
+    "id": 6,
+    "name": "Smart Watch Series 5",
+    "price": 150.00,
+    "image": "f.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Gaming Mouse 4000DPI",
+    "price": 35.00,
+    "image": "g.jpg"
+  },
+  {
+    "id": 8,
+    "name": "Laptop Cooling Pad",
+    "price": 25.00,
+    "image": "h.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Portable Power Bank 10000mAh",
+    "price": 30.00,
+    "image": "i.jpg"
+  },
+  {
+    "id": 10,
+    "name": "4K Webcam",
+    "price": 60.00,
+    "image": "j.jpg"
+  },
+  {
+    "id": 11,
+    "name": "External SSD 1TB",
+    "price": 95.00,
+    "image": "k.jpg"
+  },
+  {
+    "id": 12,
+    "name": "Ring Light for Streaming",
+    "price": 22.50,
+    "image": "l.jpg"
+  },
+  {
+    "id": 13,
+    "name": "Virtual Reality Headset",
+    "price": 299.00,
+    "image": "m.jpg"
+  },
+  {
+    "id": 14,
+    "name": "Bluetooth Portable Speaker",
+    "price": 40.00,
+    "image": "n.jpg"
+  },
+  {
+    "id": 15,
+    "name": "Tablet Stylus Pen",
+    "price": 15.00,
+    "image": "o.jpg"
+  },
+  {
+    "id": 16,
+    "name": "Screen Protector Pack",
+    "price": 8.99,
+    "image": "p.jpg"
+  },
+  {
+    "id": 17,
+    "name": "Silicone Phone Case",
+    "price": 10.00,
+    "image": "q.jpg"
+  },
+  {
+    "id": 18,
+    "name": "HDMI Cable 6ft",
+    "price": 7.50,
+    "image": "r.jpg"
+  },
+  {
+    "id": 19,
+    "name": "Wi-Fi Range Extender",
+    "price": 32.00,
+    "image": "s.jpg"
+  },
+  {
+    "id": 20,
+    "name": "Mini Drone with Camera",
+    "price": 110.00,
+    "image": "t.jpg"
+  }
+]
