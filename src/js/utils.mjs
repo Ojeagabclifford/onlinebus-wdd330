@@ -50,27 +50,29 @@ export function renderWithTemplate(template,parentElement,data, callback){
   
 }
 
+export async function loadHeaderFooter() {
+  const base = import.meta.env.BASE_URL || './';
+  const headerUrl = `${base}partials/header.html`;
+  const footerUrl = `${base}partials/footer.html`;
+  console.log('loadHeaderFooter fetching:', { headerUrl, footerUrl });
 
-export async function loadHeaderFooter(){
+  try {
+    const headerResp = await fetch(headerUrl);
+    console.log('header fetch status:', headerResp.status);
+    const headerHtml = headerResp.ok ? await headerResp.text() : '';
 
-    try {
+    const footerResp = await fetch(footerUrl);
+    console.log('footer fetch status:', footerResp.status);
+    const footerHtml = footerResp.ok ? await footerResp.text() : '';
 
-    // Use configured base (import.meta.env.BASE_URL) so partials resolve correctly
-    const base = import.meta.env.BASE_URL || '/';
-    const headerHtml = await loadHtml(`${base}partials/header.html`);
     const headerEl = document.getElementById('main-header');
+    if (headerEl && headerHtml) headerEl.innerHTML = headerHtml;
+
     const footerEl = document.getElementById('main-footer');
-    if (headerEl) headerEl.innerHTML = headerHtml;
-
-    const footerHtml = await loadHtml(`${base}partials/footer.html`);
-    if (footerEl) footerEl.innerHTML = footerHtml;
-       
-        
-    } catch (err) {
-
-        console.error('loadheaderFooter failed:', err)
-        
-    }
+    if (footerEl && footerHtml) footerEl.innerHTML = footerHtml;
+  } catch (err) {
+    console.error('loadHeaderFooter error:', err);
+  }
 }
 
 // Initialize app in an async function (avoid top-level await)
