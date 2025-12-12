@@ -36,7 +36,10 @@ async function initProductDetails() {
       alert(`${product.title} added to cart`);
     });
   }
+
 }
+
+document.addEventListener('DOMContentLoaded', initProductDetails);
 
 
 

@@ -51,7 +51,7 @@ export function renderWithTemplate(template,parentElement,data, callback){
 }
 
 export async function loadHeaderFooter() {
-  const base = import.meta.env.BASE_URL || './';
+  const base = import.meta.env.BASE_URL || '/';
   const headerUrl = `${base}partials/header.html`;
   const footerUrl = `${base}partials/footer.html`;
   console.log('loadHeaderFooter fetching:', { headerUrl, footerUrl });

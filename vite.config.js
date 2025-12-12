@@ -3,8 +3,8 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  root: 'src/',
-  base: './',           // <-- make asset/partial URLs relative
+  root: 'src',
+  base: '/',           // ensure asset/partial URLs resolve from site root (works on Netlify)
   publicDir: 'public',  // <-- ensure public/partials get copied to dist/partials
   build: {
     outDir: '../dist',
